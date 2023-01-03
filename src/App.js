@@ -21,27 +21,57 @@ function App() {
     getUsuarios();
   }, []);
 
-  const getUsuarios = () => {
-    axios
-      .get(
-        "https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users",
-        {
-          headers: {
-            Authorization: "ana-sammi-barbosa",
-          },
-        }
-      )
-      .then((res) => {
-        setUsuarios(res.data);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+  const getUsuarios = async () =>{
+    try{
+      const response = await axios.get("https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users",
+      {
+        headers: {
+          Authorization: "rodrigo-desatinar-carver",
+       },
+      }
+    );
+      setUsuarios(response.data)
+    } catch (erro) {
+      console.log(erro, "erro do getUsuarios");
+    };
   };
 
-  const pesquisaUsuario = (pesquisa) => {
-   
+  // const getUsuarios = () => {
+  //   axios
+  //     .get(
+  //       "https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users",
+  //       {
+  //         headers: {
+  //           Authorization: "ana-sammi-barbosa",
+  //         },
+  //       }
+  //     )
+  //     .then((res) => {
+  //       setUsuarios(res.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response);
+  //     });
+  // };
+
+  const pesquisaUsuario = async (pesquisa) => {
+    try{
+      const response = await axios.get(`https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users/search?name=${pesquisa.nome}&email=${pesquisa.email}`,
+      {
+        headers: {
+          Authorization: "rodrigo-desatinar-carver",
+       },
+      });
+      setUsuarios(response.data);
+      setPageFlow(3)
+    } catch (error) {
+      console.log(error);
+    }   
   };
+
+  useEffect(() => {
+    pesquisaUsuario(pesquisa);
+  }, [pesquisa])
 
   const onChangeName = (e) => {
     setNome(e.target.value);
@@ -91,7 +121,7 @@ function App() {
                   onChange={onChangeEmail}
                   placeholder="Email"
                 />
-                <button type="submit" onClick={enviarDados}>
+                <button type="submit" onClick={() => pesquisaUsuario(pesquisa)}>
                   Pesquisar
                 </button>
               </div>

@@ -1,36 +1,58 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { InputCadastro, ContainerCadastro } from './style'
+import { InputCadastro, ContainerCadastro } from "./style";
 
 function AddUsuario(props) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
 
-  const postNovoUsuario = () => {
+  const postNovoUsuario = async () => {
+    const url = `https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users`;
     const body = {
       name: nome,
-      email
+      email,
     };
-    axios
-      .post(
-        `https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users`,
-        body,
-        {
-          headers: {
-            Authorization: "ana-sammi-barbosa"
-          }
-        }
-      )
-      .then(() => {
-        alert("usuario criado!");
-        props.getUsuarios();
-        setEmail("");
-        setNome("");
-      })
-      .catch((err) => {
-        console.log("erro add", err.response);
-      });
+    const headers = {
+      headers: {
+        Authorization: "rodrigo-desatinar-carver",
+      },
+    };
+    try {
+      const response = await axios.post(url, body, headers);
+      alert("usuario criado!");
+      props.getUsuarios();
+      setEmail("");
+      setNome("");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  // const postNovoUsuario = () => {
+  //   const body = {
+  //     name: nome,
+  //     email
+  //   };
+  //   axios
+  //     .post(
+  //       `https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users`,
+  //       body,
+  //       {
+  //         headers: {
+  //           Authorization: "rodrigo-desatinar-carver"
+  //         }
+  //       }
+  //     )
+  //     .then(() => {
+  //       alert("usuario criado!");
+  //       props.getUsuarios();
+  //       setEmail("");
+  //       setNome("");
+  //     })
+  //     .catch((err) => {
+  //       console.log("erro add", err.response);
+  //     });
+  // };
 
   return (
     <ContainerCadastro>
